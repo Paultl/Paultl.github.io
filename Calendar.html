@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Calendar with Events</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+    }
+    .calendar {
+        width: 300px;
+        margin: 0 auto;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+    }
+    .month {
+        text-align: center;
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    .days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+    }
+    .day {
+        text-align: center;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        cursor: pointer;
+        position: relative;
+    }
+    .event {
+        position: absolute;
+        top: 20px;
+        left: 0;
+        width: 100%;
+        background-color: #4CAF50;
+        color: white;
+        padding: 2px;
+        font-size: 12px;
+        border-radius: 3px;
+    }
+</style>
+</head>
+<body>
+<div class="calendar">
+    <div class="month" id="month"></div>
+    <div class="days" id="days"></div>
+</div>
+
+<script>
+    // Object to store events for each date
+    const events = {
+        "2024-06-10": ["Meeting", "Lunch"],
+        "2024-06-15": ["Presentation"],
+        "2024-06-20": ["Conference", "Dinner"]
+        // Add more events as needed
+    };
+
+    // Function to generate calendar
+    function generateCalendar() {
+        // Get current date
+        const today = new Date();
+        const currentMonth = today.getMonth();
+        const currentYear = today.getFullYear();
+
+        // Get the element to display month and days
+        const monthElement = document.getElementById("month");
+        const daysElement = document.getElementById("days");
+
+        // Array of month names
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+        // Display current month
+        monthElement.textContent = monthNames[currentMonth] + " " + currentYear;
+
+        // Get the number of days in the current month
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+        // Generate days of the month
+        for (let i = 1; i <= daysInMonth; i++) {
+            const dayElement = document.createElement("div");
+            dayElement.classList.add("day");
+            dayElement.textContent = i;
+            daysElement.appendChild(dayElement);
+
+            // Check if events exist for this date
+            const currentDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+            if (events[currentDate]) {
+                // Display events for this date
+                const eventElement = document.createElement("div");
+                eventElement.classList.add("event");
+                eventElement.textContent = events[currentDate].join(", ");
+                dayElement.appendChild(eventElement);
+            }
+
+            // Add event listener to each day
+            dayElement.addEventListener("click", () => {
+                const date = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+                const event = prompt(`Enter event for ${date}:`);
+                if (event) {
+                    if (!events[date]) {
+                        events[date] = [];
+                    }
+                    events[date].push(event);
+                    const eventElement = document.createElement("div");
+                    eventElement.classList.add("event");
+                    eventElement.textContent = event;
+                    dayElement.appendChild(eventElement);
+                }
+            });
+        }
+    }
+
+    // Call the function to generate the calendar
+    generateCalendar();
+</script>
+</body>
+</html>
